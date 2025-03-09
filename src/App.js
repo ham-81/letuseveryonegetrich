@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect} from 'react'
 import './App.css';
 import smoothOperator from './assets/sainz.png'
 import diamond from './assets/diamond1.png'
@@ -7,15 +7,29 @@ import logo from './assets/logo.png'
 function App() {
   const targetRef = useRef(null);
   const targetRef2 = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   const scrollToSection = (ref) => {
-    if (ref.current){
-      ref.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+    ref.current.scrollIntoView({behavior: 'smooth'})};
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      {threshold: 0.3}
+    );
+
+    if (targetRef.current) {
+      observer.observe(targetRef.current);
     }
-    else{
-      console.log("ref if null");
+    if (targetRef2.current) {
+      observer.observe(targetRef2.current);
     }
-  }
+
+    return () => observer.disconnect();
+  }, []
+  );
 
   return (
     <div className="top-left" style = {{background: "rgb(148,187,233)", background: "linear-gradient(51deg, rgba(148,187,233,1) 20%, rgba(238,174,202,1) 100%)", overflow: 'auto', height: "100vh", width: "100vw", margin: 0, padding: 0}}>
@@ -41,13 +55,13 @@ function App() {
         <img src={smoothOperator} style={{position: 'absolute', width: '400px', height: '500px', top:'-400px', right:'80px', borderRadius: '50px'}} alt='helmet hair'></img>        
       </div>
       <div ref={targetRef2}>
-        <h1 className='poppins-regular' style={{position: 'relative', top: '20px', left: '100px'}}>Come meet us (pls)</h1>
-        <h3 className='outfit' style={{position: 'relative', top:'-40px', left: '600px'}}>CR2</h3>
-        <p className='poppins-regular' style={{position: 'relative', top:'-30px', left:'600px'}}>LHC-C<br />During BRB class</p>
-        <h3 className='outfit' style={{position: 'relative', top:'-155px', left: '850px'}}>SOCIAL MEDIA</h3>
-        <a href='https://www.instagram.com/_.jessicamariam/' target='_blank' rel='noopener noreferrer' className='poppins-regular' style={{position: 'relative', top:'-142px', left:'850px'}}>juicyka IG</a>
-        <a href='https://www.instagram.com/juicyka._/' target='_blank' rel='noopener noreferrer' className='poppins-regular' style={{position:'relative', top:'-120px', left:'773px'}}>jessica IG</a>
-        <p className='montserrat-bold' style={{position: 'relative', top: '-60px', left:'600px'}}>ok byeeeeeeeeee</p>
+        <h1 className={isVisible? 'slide-in-from-left poppins-regular' : ''} style={{position: 'relative', top: '20px', left: '100px'}}>Come meet us (pls)</h1>
+        <h3 className={isVisible? 'slide-in-from-left outfit' : ''} style={{position: 'relative', top:'-40px', left: '600px'}}>CR2</h3>
+        <p className={isVisible? 'slide-in-from-left poppins-regular' : ''} style={{position: 'relative', top:'-30px', left:'600px'}}>LHC-C<br />During BRB class</p>
+        <h3 className={isVisible? 'slide-in-from-left outfit' : ''} style={{position: 'relative', top:'-155px', left: '850px'}}>SOCIAL MEDIA</h3>
+        <a href='https://www.instagram.com/_.jessicamariam/' target='_blank' rel='noopener noreferrer' className={isVisible? 'slide-in-from-left poppins-regular' : ''} style={{position: 'relative', top:'-142px', left:'850px'}}>juicyka IG</a>
+        <a href='https://www.instagram.com/juicyka._/' target='_blank' rel='noopener noreferrer' className={isVisible? 'slide-in-from-left poppins-regular' : ''} style={{position:'relative', top:'-120px', left:'773px'}}>jessica IG</a>
+        <p className={isVisible? 'slide-in-from-left montserrat-bold' : ''} style={{position: 'relative', top: '-60px', left:'600px'}}>ok byeeeeeeeeee</p>
       </div>
       <div style={{height: '100px'}}></div>
     </div>
